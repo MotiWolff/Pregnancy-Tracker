@@ -6,9 +6,15 @@ load_dotenv()
 
 class Config:
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'dev-key-please-change'
-    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or \
-        'sqlite:///pregnancy_tracker.db'
+    
+    # Database configuration
+    DATABASE_URL = os.environ.get('DATABASE_URL')
+    if DATABASE_URL and DATABASE_URL.startswith('postgres://'):
+        DATABASE_URL = DATABASE_URL.replace('postgres://', 'postgresql://')
+    
+    SQLALCHEMY_DATABASE_URI = DATABASE_URL
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-    # Add these lines for file uploads
-    UPLOAD_FOLDER = os.path.join(basedir, 'app/static/uploads')
-    MAX_CONTENT_LENGTH = 16 * 1024 * 1024  # 16MB max file size
+
+    # File upload settings (will use Supabase Storage)
+    SUPABASE_URL = os.environ.get('SUPABASE_URL')
+    SUPABASE_KEY = os.environ.get('SUPABASE_ANON_KEY')

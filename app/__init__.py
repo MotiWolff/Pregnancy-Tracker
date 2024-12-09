@@ -12,9 +12,9 @@ login_manager.login_view = 'auth.login'
 def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
-
+    
     db.init_app(app)
-    migrate.init_app(app, db)  # Add this line
+    migrate.init_app(app, db)
     login_manager.init_app(app)
 
     from app.routes.main import bp as main_bp
