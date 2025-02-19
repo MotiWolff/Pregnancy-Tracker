@@ -28,5 +28,8 @@ ENV PORT=8000
 # Expose port
 EXPOSE 8000
 
-# Run the application with migrations
-CMD flask db upgrade && gunicorn run:app --bind 0.0.0.0:$PORT 
+# Run the application with database reset
+CMD flask db stamp head && \
+    flask db migrate && \
+    flask db upgrade && \
+    gunicorn run:app --bind 0.0.0.0:$PORT 
