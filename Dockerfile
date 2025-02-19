@@ -25,6 +25,9 @@ ENV FLASK_APP=run.py
 ENV PYTHONUNBUFFERED=1
 ENV PORT=8000
 
+# Initialize the database
+RUN flask db upgrade
+
 # Expose port
 EXPOSE 8000
 

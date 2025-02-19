@@ -18,3 +18,10 @@ class Config:
     # File upload settings
     UPLOAD_FOLDER = os.path.join(basedir, 'app', 'static', 'uploads')
     MAX_CONTENT_LENGTH = 16 * 1024 * 1024  # 16MB max file size
+
+    # Ensure templates are auto-reloaded
+    TEMPLATES_AUTO_RELOAD = True
+
+    # Session configuration
+    SESSION_TYPE = 'filesystem'
+    PERMANENT_SESSION_LIFETIME = 1800  # 30 minutes
