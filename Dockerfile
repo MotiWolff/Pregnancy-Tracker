@@ -17,19 +17,23 @@ RUN pip install gunicorn
 # Copy the rest of the application
 COPY . .
 
-# Create uploads directory
+# Create necessary directories
 RUN mkdir -p app/static/uploads
+RUN mkdir -p migrations/versions
 
 # Set environment variables
 ENV FLASK_APP=run.py
 ENV PYTHONUNBUFFERED=1
 ENV PORT=8000
 
+# Set permissions
+RUN chmod -R 777 migrations
+
 # Expose port
 EXPOSE 8000
 
-# Run the application with database reset
-CMD flask db stamp head && \
+# Run the application with database initialization
+CMD flask db init || true && \
     flask db migrate && \
     flask db upgrade && \
     gunicorn run:app --bind 0.0.0.0:$PORT 
