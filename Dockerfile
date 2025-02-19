@@ -25,11 +25,8 @@ ENV FLASK_APP=run.py
 ENV PYTHONUNBUFFERED=1
 ENV PORT=8000
 
-# Initialize the database
-RUN flask db upgrade
-
 # Expose port
 EXPOSE 8000
 
-# Run the application
-CMD gunicorn run:app --bind 0.0.0.0:$PORT 
+# Run the application with migrations
+CMD flask db upgrade && gunicorn run:app --bind 0.0.0.0:$PORT 
