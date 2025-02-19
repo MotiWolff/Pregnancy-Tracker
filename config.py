@@ -10,5 +10,5 @@ class Config:
         'sqlite:///pregnancy_tracker.db'
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     # Add these lines for file uploads
-    UPLOAD_FOLDER = os.path.join(basedir, 'app/static/uploads')
+    UPLOAD_FOLDER = os.path.join(basedir, 'app', 'static', 'uploads')
     MAX_CONTENT_LENGTH = 16 * 1024 * 1024  # 16MB max file size

@@ -10,6 +10,12 @@ from werkzeug.utils import secure_filename
 
 bp = Blueprint('tracking', __name__)
 
+# Add this function at the top of the file
+def ensure_upload_directory_exists():
+    upload_dir = os.path.join('app', 'static', 'uploads')
+    if not os.path.exists(upload_dir):
+        os.makedirs(upload_dir)
+
 # Weight tracking routes
 @bp.route('/weight/record', methods=['GET', 'POST'])
 @login_required
@@ -96,24 +102,17 @@ def add_appointment():
 def add_photo():
     form = PhotoForm()
     if form.validate_on_submit():
+        ensure_upload_directory_exists()  # Add this line
         try:
-            # Check if uploads directory exists, if not create it
-            upload_dir = os.path.join(current_app.root_path, 'static/uploads')
-            os.makedirs(upload_dir, exist_ok=True)
-
-            # Save the uploaded file
-            f = form.photo.data
-            # Get the original file extension
-            file_ext = os.path.splitext(f.filename)[1].lower()
-            filename = secure_filename(f'{current_user.id}_{datetime.now().strftime("%Y%m%d_%H%M%S")}{file_ext}')
-            filepath = os.path.join(upload_dir, filename)
-            f.save(filepath)
-
-            # Create database record
+            file = form.photo.data
+            filename = f"{current_user.id}_{datetime.now().strftime('%Y%m%d_%H%M%S')}{os.path.splitext(file.filename)[1]}"
+            file_path = os.path.join('app', 'static', 'uploads', filename)
+            file.save(file_path)
+            
             photo = Photo(
                 user_id=current_user.id,
                 date=form.date.data,
-                image_path=f'uploads/{filename}',
+                image_path=filename,  # Store just the filename
                 caption=form.caption.data
             )
             db.session.add(photo)
@@ -123,14 +122,6 @@ def add_photo():
         except Exception as e:
             db.session.rollback()
             flash(f'Error uploading photo: {str(e)}', 'error')
-            print(f"Upload error: {str(e)}")  # For debugging
-    
-    # If there are form errors, display them
-    if form.errors:
-        for field, errors in form.errors.items():
-            for error in errors:
-                flash(f'{field}: {error}', 'error')
-
     return render_template('tracking/photo.html', form=form)
 
 # Symptom routes

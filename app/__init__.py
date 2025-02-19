@@ -14,15 +14,17 @@ def create_app():
     app.config.from_object(Config)
 
     db.init_app(app)
-    migrate.init_app(app, db)  # Add this line
+    migrate.init_app(app, db)
     login_manager.init_app(app)
 
     from app.routes.main import bp as main_bp
     from app.routes.auth import bp as auth_bp
     from app.routes.tracking import bp as tracking_bp
+    from app.routes.admin import bp as admin_bp
 
     app.register_blueprint(main_bp)
     app.register_blueprint(auth_bp)
     app.register_blueprint(tracking_bp)
+    app.register_blueprint(admin_bp)
 
     return app
