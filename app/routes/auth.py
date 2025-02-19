@@ -12,9 +12,17 @@ def register():
         return redirect(url_for('main.dashboard'))
     form = RegistrationForm()
     if form.validate_on_submit():
-        user = User(username=form.username.data, email=form.email.data,
-                   due_date=form.due_date.data)
+        user = User(
+            username=form.username.data,
+            email=form.email.data,
+            due_date=form.due_date.data
+        )
         user.set_password(form.password.data)
+        
+        # Make the first user an admin
+        if User.query.count() == 0:
+            user.is_admin = True
+        
         db.session.add(user)
         db.session.commit()
         flash('Congratulations, you are now registered!')
