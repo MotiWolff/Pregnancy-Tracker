@@ -33,7 +33,8 @@ RUN chmod -R 777 migrations
 EXPOSE 8000
 
 # Run the application with database initialization
-CMD flask db init || true && \
-    flask db migrate && \
+CMD rm -rf migrations/* && \
+    flask db init && \
+    flask db migrate -m "initial migration" && \
     flask db upgrade && \
     gunicorn run:app --bind 0.0.0.0:$PORT 
