@@ -22,9 +22,10 @@ RUN mkdir -p app/static/uploads
 # Set environment variables
 ENV FLASK_APP=run.py
 ENV PYTHONUNBUFFERED=1
+ENV PORT=8000
 
 # Expose port
-EXPOSE 10000
+EXPOSE 8000
 
 # Run the application
-CMD ["gunicorn", "--config", "gunicorn.conf.py", "run:app"] 
+CMD gunicorn run:app --bind 0.0.0.0:$PORT 
